@@ -1,5 +1,5 @@
 <template>
-<div class=" container bg-dark text-light mt-5 rounded mb-0 ml-100 mr-100">
+<div id="login" class=" container bg-dark text-light mt-5 rounded mb-0 ml-100 mr-100">
   <form>
     <div class="form-group">
       <label for="exampleInputEmail1">Dirección de correo electrónico</label>
@@ -48,7 +48,7 @@ export default {
       try{
         //let response = await this.$http.post('/api/usuario/', this.signin)
         let response = await this.$http.post('/api/usuario/login', this.login)
-        console.log(response.data)
+        //console.log(response.data)
         let token = response.data.tokenReturn;
         let user = response.data.user;
 
