@@ -5,13 +5,13 @@
       <router-link to="/about">About</router-link>
     </div>-->
     <router-view :key="$route.name"/>
-<div id="app">
+<div id="app" v-if="token">
   <v-app id="inspire">
 
     <v-app-bar app>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
-      <v-toolbar-title>Categorias</v-toolbar-title>
+      <v-toolbar-title>Grupo 121</v-toolbar-title>
     </v-app-bar>
 
     <v-navigation-drawer v-model="drawer" fixed temporary>
@@ -22,7 +22,15 @@
               <v-icon>mdi-home</v-icon>
             </v-list-item-icon>
 
-            <v-list-item-title>Home</v-list-item-title>
+            <v-list-item-title>Land Page</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item :to="{ name: 'Home' }">
+            <v-list-item-icon>
+              <v-icon>mdi-table</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-title>Dash Board</v-list-item-title>
           </v-list-item>
 
           <v-list-group prepend-icon="mdi-card-account-details-outline">
@@ -66,6 +74,23 @@
               </v-list-item-icon>
             </v-list-item>
           </v-list-group>
+
+          <v-list-item v-if="!token" :to="{ name: 'Login' }">
+            <v-list-item-icon>
+              <v-icon>mdi-admin</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-title>Iniciar sección</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item v-else :to="{ name: 'Login' }">
+            <v-list-item-icon>
+              <v-icon>mdi-exit</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-title>Cerrar sección</v-list-item-title>
+          </v-list-item>
+
         </v-list>
       </v-card>
     </v-navigation-drawer>
@@ -78,6 +103,7 @@
 <script>
   export default {
   data: () => ({
+    token: localStorage.jwt,
     drawer: null,
     admins: [
       ["Categoria", "mdi-developer-board", "Categoria"],

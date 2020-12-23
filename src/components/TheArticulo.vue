@@ -30,7 +30,7 @@
                         v-bind="attrs"
                         v-on="on"
                       >
-                        Agregar Categoria
+                        Agregar Articulo
                       </v-btn>
                     </template>
                     <v-card>
@@ -41,12 +41,12 @@
                       <v-card-text>
                         <v-container>
                           <v-row>
-                            <v-col cols="12" >
+                            <!-- <v-col cols="12" >
                               <v-text-field
                                 v-model="editedItem.id"
                                 label="ID"
                               ></v-text-field>
-                            </v-col>
+                            </v-col> -->
                             <v-col cols="12" >
                               <v-text-field
                                 v-model="editedItem.nombre"
@@ -55,20 +55,25 @@
                             </v-col>
                             <v-col cols="12" >
                               <v-text-field
+                                v-model="editedItem.resumen"
+                                label="Resumen"
+                              ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" >
+                              <v-text-field
                                 v-model="editedItem.descripcion"
                                 label="Descripción"
                               ></v-text-field>
                             </v-col>
-                                <v-col cols="12" >
+                                <!-- <v-col cols="12" >
                               <v-text-field
                                 v-model="editedItem.estado"
                                 label="Estado"
                               ></v-text-field>
-                            </v-col>
-
+                            </v-col> -->
                                 <v-col cols="12" >
                               <v-select
-                                v-model="categoria"
+                                v-model="editedItem.categoria.id"
                                 label="Categoria"
                                 :items="categorias"
                                 item-text="nombre"
@@ -103,15 +108,17 @@
                       </v-card-actions>
                     </v-card>
                   </v-dialog>
-                  <v-dialog v-model="dialogDelete">
+                  <template v-if="editedItem.estado == 1">
+                  <v-dialog v-model="dialogDelete" width="800px"
+                      >
                     <v-card>
-                      <v-card-title class="headline"
+                      <v-card-title class="d-flex justify-center"
                         >¿Estas seguro de que quieres desactivar el artículo?</v-card-title
                       >
                       <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="blue darken-1" text @click="closeDelete"
-                          >Cancel</v-btn
+                          >Cancelar</v-btn
                         >
                         <v-btn
                           color="blue darken-1"
@@ -123,6 +130,27 @@
                       </v-card-actions>
                     </v-card>
                   </v-dialog>
+                  </template>
+                  <template v-else>
+                  <v-dialog v-model="dialogDelete" width="800px"
+                      >
+                    <v-card>
+                      <v-card-title class="d-flex justify-center"
+                        >Confirme para activar el articulos.</v-card-title
+                      >
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          color="blue darken-1"
+                          text
+                          @click="deleteItemConfirm"
+                          >OK</v-btn
+                        >
+                        <v-spacer></v-spacer>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+                  </template>
                 </v-toolbar>
               </template>
               <template v-slot:item.actions="{ item }">
@@ -172,36 +200,38 @@ export default {
       descripcion: 0,
       codigo: '',
       estado: 0,
+      resumen: '',
       categoria:{
         id: 0,
         nombre: '',
       }
     },
     defaultItem: {
-      id:0,
+      id:-1,
       nombre: '',
-      descripcion: 0,
+      descripcion:'',
       codigo: '',
-      estado: 0,
+      estado: '',
+      resumen: '',
       categoria:{
-        id: 0,
+        id: '',
         nombre: '',
       }
     },
     
     headers: [
-      { text: "ID", value: "id" },
+      { text: "ID", value: "id", align: "start", sortable: true },
       {
         text: "Nombre",
-        align: "start",
-        sortable: true,
+        // align: "start",
+        // sortable: true,
         value: "nombre",
       },
-      { text: "Descripcion", value: "descripcion" },
+      { text: "Resumen", value: "resumen" },
       { text: "Categoria", value: "categoria.nombre" },
-       { text: "Código", value: "codigo" },
+      { text: "Código", value: "codigo" },
       { text: "Estado", value: "estado" },
-      { text: "Actions", value: "actions", sortable: false },
+      { text: "Actions", value: "actions"},
     ],
   }),
 
@@ -250,6 +280,7 @@ export default {
       axios.get("https://calm-chamber-38042.herokuapp.com/api/categoria/list")
         .then( response => {
           this.categorias = response.data;
+          console.log(response.data)
         })
         .catch((error) => {
           console.log(error);
@@ -314,14 +345,17 @@ export default {
       });
     },
 
-    save() {
+    async save() {
+      console.log(this.editedItem)
       if (this.editedIndex > -1) {
         //put
-        axios.put('https://calm-chamber-38042.herokuapp.com/api/articulo/update',{
-          "id": this.editedItem.id,
+        await axios.put('https://calm-chamber-38042.herokuapp.com/api/articulo/update',{
+         "id": this.editedItem.id,
           "nombre": this.editedItem.nombre,
           "descripcion": this.editedItem.descripcion,
-          //"categoria": this.categorias,
+          "categoriaId": this.editedItem.categoria.id.id,
+          "resumen": this.editedItem.resumen,
+          "codigo": this.editedItem.codigo,
         }, {headers: {'token': localStorage.jwt}})
         .then(response => {
             this.list();
@@ -331,12 +365,14 @@ export default {
         })
         } else {
         //post
-        axios.post('https://calm-chamber-38042.herokuapp.com/api/articulo/add',{
+        await axios.post('https://calm-chamber-38042.herokuapp.com/api/articulo/add',{
           "estado": 1,
+          "id": this.editedItem.id,
           "nombre": this.editedItem.nombre,
-          // "descripcion": this.editedItem.descripcion,
-          // "categoriaId": this.editedItem.categoria.id
-          // "codigo": this.editedItem.codigo
+          "descripcion": this.editedItem.descripcion,
+          "categoriaId": this.editedItem.categoria.id.id,
+          "resumen": this.editedItem.resumen,
+          "codigo": this.editedItem.codigo,
         },{headers: {'token': localStorage.jwt}})
         .then(response => {
             this.list();

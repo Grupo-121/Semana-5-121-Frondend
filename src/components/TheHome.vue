@@ -55,10 +55,12 @@
             <div class="col pt-2 ml-2">
 
                 <!-- Content -->
-                <img src="https://github.githubassets.com/images/modules/logos_page/Octocat.png" alt=" " width="160"
-                    height="133"><br>
-                <span class="footer-url text-uppercase font-weight-bold text-light"><a href="https://github.com/orgs/Grupo-121/dashboard"> Enlace repositorio
-                        Github</a></span>
+                <img src="https://github.githubassets.com/images/modules/logos_page/Octocat.png" alt=" " width="100"
+                    height="90"><br>
+                <span class="footer-url text-uppercase font-weight-bold text-light"><a href="https://github.com/Grupo-121/Semana-5-121-Frondend"> Enlace repositorio 
+                        Github (Front)</a></span><br>
+                <span class="footer-url text-uppercase font-weight-bold text-light"><a href="https://github.com/Grupo-121/semana-5-121"> Enlace repositorio 
+                        Github (Back)</a></span>
                 <p class="text-footer text-uppercase font-weight-bold text-justify text-light">
                     Proyecto sprint 2 del ciclo 3 de Programamción<br>
                     Grupo 121<br>
