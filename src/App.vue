@@ -17,7 +17,7 @@
     <v-navigation-drawer v-model="drawer" fixed temporary>
       <v-card class="mx-auto" width="300">
         <v-list>
-          <v-list-item :to="{ name: 'Home' }">
+          <v-list-item :to="{ name: 'Pagina' }">
             <v-list-item-icon>
               <v-icon>mdi-home</v-icon>
             </v-list-item-icon>

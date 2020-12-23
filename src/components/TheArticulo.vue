@@ -103,11 +103,10 @@
                       </v-card-actions>
                     </v-card>
                   </v-dialog>
-                  <v-dialog v-model="dialogDelete" max-width="500px">
+                  <v-dialog v-model="dialogDelete">
                     <v-card>
                       <v-card-title class="headline"
-                        >Are you sure you want to delete this
-                        item?</v-card-title
+                        >¿Estas seguro de que quieres desactivar el artículo?</v-card-title
                       >
                       <v-card-actions>
                         <v-spacer></v-spacer>
@@ -237,7 +236,7 @@ export default {
     //   ];
     // },
     list() {
-      axios.get("http://localhost:3000/api/articulo/list")
+      axios.get("https://calm-chamber-38042.herokuapp.com/api/articulo/list")
         .then( response => {
           this.articulos = response.data;
           this.cargando = false;
@@ -245,9 +244,10 @@ export default {
         .catch((error) => {
           console.log(error);
         });
+        console.log(localStorage.jwt)
     },
     listCastegorias() {
-      axios.get("http://localhost:3000/api/categoria/list")
+      axios.get("https://calm-chamber-38042.herokuapp.com/api/categoria/list")
         .then( response => {
           this.categorias = response.data;
         })
@@ -271,9 +271,9 @@ export default {
     deleteItemConfirm() {
         if (this.editedItem.estado === 1) {
         //put
-        axios.put('http://localhost:3000/api/categoria/deactivate',{
+        axios.put('https://calm-chamber-38042.herokuapp.com/api/articulo/deactivate',{
           "id": this.editedItem.id,
-        })
+        }, {headers: {'token': localStorage.jwt}})
         .then(response => {
             this.list();
         })
@@ -282,9 +282,9 @@ export default {
         })
         } else {
         //post
-        axios.put('http://localhost:3000/api/categoria/activate',{
+        axios.put('https://calm-chamber-38042.herokuapp.com/api/articulo/activate',{
           "id": this.editedItem.id,
-        })
+        }, {headers: {'token': localStorage.jwt}})
         .then(response => {
             this.list();
         })
@@ -317,14 +317,12 @@ export default {
     save() {
       if (this.editedIndex > -1) {
         //put
-        axios.put('http://localhost:3000/api/categoria/update',{
+        axios.put('https://calm-chamber-38042.herokuapp.com/api/articulo/update',{
           "id": this.editedItem.id,
           "nombre": this.editedItem.nombre,
           "descripcion": this.editedItem.descripcion,
           //"categoria": this.categorias,
-
-
-        })
+        }, {headers: {'token': localStorage.jwt}})
         .then(response => {
             this.list();
         })
@@ -333,12 +331,13 @@ export default {
         })
         } else {
         //post
-        axios.post('http://localhost:3000/api/articulo/add',{
+        axios.post('https://calm-chamber-38042.herokuapp.com/api/articulo/add',{
           "estado": 1,
           "nombre": this.editedItem.nombre,
-          "descripcion": this.editedItem.descripcion,
-          "categoria": this.categorias,
-        })
+          // "descripcion": this.editedItem.descripcion,
+          // "categoriaId": this.editedItem.categoria.id
+          // "codigo": this.editedItem.codigo
+        },{headers: {'token': localStorage.jwt}})
         .then(response => {
             this.list();
         })
