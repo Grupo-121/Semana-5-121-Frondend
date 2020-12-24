@@ -15,7 +15,6 @@
       </v-btn>
 
     </v-toolbar>
-  </v-card>
   </v-container>
 </template>
 
