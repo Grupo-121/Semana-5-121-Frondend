@@ -58,7 +58,12 @@ export default {
         if(token){
           swal("Bienvenido!", "Has ingresado correctamente!", "success");
           this.$router.push('/home');
+          // setTimeout(function() {
+          //   location.reload();
+          //       // rest of code here
+          // }, 10);
         }
+        
       }
 
       catch{

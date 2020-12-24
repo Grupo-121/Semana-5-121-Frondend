@@ -9,8 +9,6 @@
       <v-spacer></v-spacer>
 
       <v-btn
-        v-bind="attrs"
-        v-on="on"
         href="login"
       >
          LOGIN

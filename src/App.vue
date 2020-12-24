@@ -5,10 +5,10 @@
       <router-link to="/about">About</router-link>
     </div>-->
     <router-view :key="$route.name"/>
-<div id="app" v-if="token">
+<div id="app">
   <v-app id="inspire">
 
-    <v-app-bar app>
+    <v-app-bar class="d-flex justify-content-between" app>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
       <v-toolbar-title>Grupo 121</v-toolbar-title>
@@ -75,20 +75,14 @@
             </v-list-item>
           </v-list-group>
 
-          <v-list-item v-if="!token" :to="{ name: 'Login' }">
-            <v-list-item-icon>
-              <v-icon>mdi-admin</v-icon>
-            </v-list-item-icon>
+          <v-btn
+            href="login">
+            Iniciar sección
+          </v-btn>
 
-            <v-list-item-title>Iniciar sección</v-list-item-title>
-          </v-list-item>
-
-          <v-list-item v-else :to="{ name: 'Login' }">
-            <v-list-item-icon>
-              <v-icon>mdi-exit</v-icon>
-            </v-list-item-icon>
-
-            <v-list-item-title>Cerrar sección</v-list-item-title>
+          <v-list-item class="form-inline my-2 my-lg-0" v-show="token">
+            <v-list-item-title class="d-flex justify-center btn btn-outline-success my-2 my-sm-0" 
+            type="submit" @click.prevent="logOut">Salir</v-list-item-title>
           </v-list-item>
 
         </v-list>
@@ -101,7 +95,10 @@
 </template>
 
 <script>
-  export default {
+
+// setTimeout(this.$forceUpdate(), 20)
+
+export default {
   data: () => ({
     token: localStorage.jwt,
     drawer: null,
@@ -111,9 +108,24 @@
     ],
     cruds: [["Usuarios", "mdi-account-supervisor", "Usuario"],
             ["Juegos", "mdi-gamepad-square", "Juegos"]],
-})
-}
-
+  }),
+  methods:{
+  logOut(){
+    localStorage.removeItem('jwt');
+    localStorage.removeItem('user');
+    this.token = null;
+    //this.$router.push('/');
+    if(localStorage.getItem('jwt')===null){
+      swal("Esperamos verte pronto!", "Has salido correctamente", "success");
+      this.$router.push('/');  
+    }},
+  },
+  recarga(){
+    location.reload();
+  },
+  mounted() {
+    this.$forceUpdate();
+  }}
 </script>
 
 <style>

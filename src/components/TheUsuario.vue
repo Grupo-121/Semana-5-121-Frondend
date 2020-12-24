@@ -4,12 +4,14 @@
    <h1>sadasdsa</h1><br>
    <font color="white"><h1>sadasdsa</h1><br></font>
 </div>
+
+
 <div id="app mt-5">
           <v-app id="inspire mt-5">
             <v-data-table
               :headers="headers"
               :items="usuarios"
-              sort-by="name"
+              sort-by="nombre"
               class="elevation-1"
               :loading="cargando"
               loading-text="Loading... Please wait"
@@ -39,45 +41,38 @@
                       <v-card-text>
                         <v-container>
                           <v-row>
-                            <v-col cols="12" >
-
+                             <!-- <v-col cols="12" >
                               <v-text-field
                                 v-model="editedItem.id"
                                 label="ID"
                               ></v-text-field>
-
-                            </v-col>
+                            </v-col> -->
                             <v-col cols="12" >
-
                               <v-text-field
-                                v-model="editedItem.name"
+                                v-model="editedItem.nombre"
                                 label="Nombre"
                               ></v-text-field>
-
                             </v-col>
-
                             <v-col cols="12" >
                               <v-text-field
                                 v-model="editedItem.email"
                                 label="Correo"
                               ></v-text-field>
-
-                            </v-col>
-                                <v-col cols="12" >
-
-                              <v-text-field
-                                v-model="editedItem.estado"
-                                label="Estado"
-                              ></v-text-field>
-
                             </v-col>
 
-                            <!-- <v-col cols="12" >
+                            <v-col cols="12" >
                               <v-text-field
-                                v-model="editedItem.fat"
-                                label="Estado"
+                                v-model="editedItem.rol"
+                                label="Rol"
                               ></v-text-field>
-                            </v-col> -->
+                            </v-col>
+                            <v-col cols="12" >
+                              <v-text-field
+                                v-model="editedItem.password"
+                                label="Constraseña"
+                              ></v-text-field>
+                            </v-col>
+                       
                           </v-row>
                         </v-container>
                       </v-card-text>
@@ -93,16 +88,17 @@
                       </v-card-actions>
                     </v-card>
                   </v-dialog>
-                  <v-dialog v-model="dialogDelete" max-width="500px">
+                  <template v-if="editedItem.estado == 1">
+                  <v-dialog v-model="dialogDelete" width="800px"
+                      >
                     <v-card>
-                      <v-card-title class="headline"
-                        >Are you sure you want to delete this
-                        item?</v-card-title
+                      <v-card-title class="d-flex justify-center"
+                        >¿Estas seguro de que quieres desactivar el artículo?</v-card-title
                       >
                       <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="blue darken-1" text @click="closeDelete"
-                          >Cancel</v-btn
+                          >Cancelar</v-btn
                         >
                         <v-btn
                           color="blue darken-1"
@@ -114,6 +110,27 @@
                       </v-card-actions>
                     </v-card>
                   </v-dialog>
+                  </template>
+                  <template v-else>
+                  <v-dialog v-model="dialogDelete" width="800px"
+                      >
+                    <v-card>
+                      <v-card-title class="d-flex justify-center"
+                        >Confirme para activar el articulos.</v-card-title
+                      >
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          color="blue darken-1"
+                          text
+                          @click="deleteItemConfirm"
+                          >OK</v-btn
+                        >
+                        <v-spacer></v-spacer>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+                  </template>
                 </v-toolbar>
               </template>
               <template v-slot:item.actions="{ item }">
@@ -135,7 +152,7 @@
                   </v-icon>
               </template>
               <template v-slot:no-data>
-                <v-btn color="primary" @click="list"> Reset </v-btn>
+                <v-btn color="primary" @click="initialize"> Reset </v-btn>
               </template>
             </v-data-table>
           </v-app>
@@ -143,50 +160,54 @@
       </div>
 
       
-         <!----Llamar soloe ste elemento en categoria----->
+         <!----Llamar soloe ste elemento en usuario----->
 </template>
 
 <script>
 import axios from 'axios';
+
 export default {
   data: () => ({
     // desserts: [],
+     dialog: false,
+    dialogDelete: false,
+      headers: [
+      { text: "ID", value: "id" },
+      {
+        text: "usuario",
+        align: "start",
+        sortable: true,
+        value: "nombre",
+      },
+      { text: "rol", value: "rol" },
+      { text: "Estado", value: "estado" },
+      { text: "Email", value: "email" },
+      { text: "Actions", value: "actions", sortable: false },
+    ],
     usuarios: [],
     editedIndex: -1,
     cargando: true,
     editedItem: {
       id:0,
-      nombre: "",
-      email: "",
+      nombre: '',
+      rol: '',
+      email: '',
+      password: '',
       estado: 0,
     },
     defaultItem: {
       id:0,
-      name: "",
-      email: "",
+      nombre: '',
+      rol: '',
+      email: '',
+      password: '',
       estado: 0,
     },
-    dialog: false,
-    dialogDelete: false,
-    
-
-    headers: [
-      { text: "ID", value: "id" },
-      {
-        text: "Usuarios",
-        align: "start",
-        sortable: true,
-        value: "name",
-      },
-      { text: "Correo", value: "email" },
-      { text: "Estado", value: "estado" },
-      { text: "Actions", value: "actions", sortable: false },
-    ],
   }),
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "Agregar Usuario" : "Edit Item";
+      return this.editedIndex === -1 ? "Agregar usuario" : "Edit Item";
     },
   },
 
@@ -204,20 +225,12 @@ export default {
   },
 
   methods: {
-    // initialize() {
-    //   this.desserts = [
-    //     {
-    //       nombre: "Frozen Yogurt",
-    //       descripcion: 159,
-    //       estado: 6.0,
-    //     },
-    //   ];
-    // },
+   
     list() {
-      axios.get("http://localhost:3000/api/usuario/list")
+      axios.get("https://calm-chamber-38042.herokuapp.com/api/usuario/list")
         .then( response => {
           this.usuarios = response.data;
-           this.cargando = false;
+          this.cargando = false;
         })
         .catch((error) => {
           console.log(error);
@@ -239,9 +252,9 @@ export default {
     deleteItemConfirm() {
         if (this.editedItem.estado === 1) {
         //put
-        axios.put('http://localhost:3000/api/usuario/deactivate',{
+        axios.put('http://calm-chamber-38042.herokuapp.com/api/usuario/deactivate',{
           "id": this.editedItem.id,
-        })
+        },{headers: {'token': localStorage.jwt}})
         .then(response => {
             this.list();
         })
@@ -250,9 +263,9 @@ export default {
         })
         } else {
         //post
-        axios.put('http://localhost:3000/api/usuario/activate',{
+        axios.put('http://calm-chamber-38042.herokuapp.com/api/usuario/activate',{
           "id": this.editedItem.id,
-        })
+        },{headers: {'token': localStorage.jwt}})
         .then(response => {
             this.list();
         })
@@ -260,9 +273,6 @@ export default {
             return error;
         })        
       }
-
-
-
       this.closeDelete();
     },
 
@@ -285,24 +295,32 @@ export default {
     save() {
       if (this.editedIndex > -1) {
         //put
-        axios.put('http://localhost:3000/api/usuario/update',{
+        console.log(this.editedItem);
+        axios.put('http://calm-chamber-38042.herokuapp.com/api/usuario/update',{
+          "email": this.editedItem.email,
+          "estado": 1,
           "id": this.editedItem.id,
-          "nombre": this.editedItem.name,
-          "correo": this.editedItem.email,
-        })
+          "nombre": this.editedItem.nombre,
+          "rol": this.editedItem.rol,
+          "password": this.editedItem.password,
+
+        },{headers: {'token': localStorage.jwt}})
         .then(response => {
-            this.list();
+          this.list();
         })
         .catch(error => {
-            return error;
+          return error;
         })
         } else {
-        //post
-        axios.post('http://localhost:3000/api/usuario/register',{
-          "estado": 1,
+          console.log(this.editedItem);//post
+        axios.post('https://calm-chamber-38042.herokuapp.com/api/usuario/add',{
+          
+          // "estado": 1,
           "nombre": this.editedItem.nombre,
-          "correo": this.editedItem.email,
-        })
+          "rol": this.editedItem.rol,
+          "password": this.editedItem.password,
+          "email": this.editedItem.email,
+        },{headers: {'token': localStorage.jwt}})
         .then(response => {
             this.list();
         })
@@ -315,5 +333,3 @@ export default {
   },
 };
 </script>
-
-

@@ -15,7 +15,7 @@ const routes = [
     name: 'Login',
     component: () => import(/* webpackChunkName: "login" */ '../views/Login.vue'),
     meta: {
-      
+
     }
   },
   {
@@ -53,17 +53,26 @@ const routes = [
   {
     path: '/categorias',
     name: 'Categoria',
-    component: () => import(/* webpackChunkName: "Categorias" */ '../views/Categoria.vue')
+    component: () => import(/* webpackChunkName: "Categorias" */ '../views/Categoria.vue'),
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/articulos',
     name: 'Articulo',
-    component: () => import(/* webpackChunkName: "Articulos" */ '../views/Articulo.vue')
+    component: () => import(/* webpackChunkName: "Articulos" */ '../views/Articulo.vue'),
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/usuario',
     name: 'Usuario',
-    component: () => import(/* webpackChunkName: "Usuario" */ '../views/Usuario.vue')
+    component: () => import(/* webpackChunkName: "Usuario" */ '../views/Usuario.vue'),
+    meta: {
+      requiresAuth: true
+    }
   }
 
 ]

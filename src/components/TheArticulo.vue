@@ -237,7 +237,7 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "Agregar catergoria" : "Edit Item";
+      return this.editedIndex === -1 ? "Agregar articulo" : "Edit Item";
     },
   },
 
